@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,30 +55,30 @@ public class Todo_Adapter extends RecyclerView.Adapter<Todo_Adapter.TodoViewHold
         holder.txttitle.setText(list.get(position).getTitle());
         holder.txtcontact.setText(list.get(position).getContact());
         holder.txtdate.setText(list.get(position).getDate());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(context, v);
-                MenuInflater inflater = popupMenu.getMenuInflater();
-                inflater.inflate(R.menu.popur_menu, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int idex = item.getItemId();
-                        if (idex == R.id.menu_Delete) {
-                            DeleteItem(position);
-                            return true;
-                        }
-                        if (idex == R.id.menu_Update) {
-                            UpdateItem(position);
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show(); // Hiển thị menu popup
-            }
-        });
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                PopupMenu popupMenu = new PopupMenu(context, v);
+//                MenuInflater inflater = popupMenu.getMenuInflater();
+//                inflater.inflate(R.menu.popur_menu, popupMenu.getMenu());
+//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem item) {
+//                        int idex = item.getItemId();
+//                        if (idex == R.id.menu_Delete) {
+//                            DeleteItem(position);
+//                            return true;
+//                        }
+//                        if (idex == R.id.menu_Update) {
+//                            UpdateItem(position);
+//                            return true;
+//                        }
+//                        return false;
+//                    }
+//                });
+//                popupMenu.show(); // Hiển thị menu popup
+//            }
+//        });
     }
 
     @Override
@@ -85,15 +86,46 @@ public class Todo_Adapter extends RecyclerView.Adapter<Todo_Adapter.TodoViewHold
         return list.size();
     }
 
-    class TodoViewHolder extends RecyclerView.ViewHolder {
+    class TodoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView txttitle, txtcontact, txtdate;
+        ImageView imgclick;
 
         public TodoViewHolder(@NonNull View itemView) {
             super(itemView);
             txttitle = itemView.findViewById(R.id.txttitle);
             txtcontact = itemView.findViewById(R.id.txtcontent);
             txtdate = itemView.findViewById(R.id.txtdate);
+            imgclick = itemView.findViewById(R.id.imglick);
+            imgclick.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            ShowPopurMenu(v);
+        }
+
+        private void ShowPopurMenu(View v) {
+            int position = getAdapterPosition();
+            PopupMenu popupMenu = new PopupMenu(context, v);
+            MenuInflater inflater = popupMenu.getMenuInflater();
+            inflater.inflate(R.menu.popur_menu, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    int idex = item.getItemId();
+                    if (idex == R.id.menu_Delete) {
+                        DeleteItem(position);
+                        return true;
+                    }
+                    if (idex == R.id.menu_Update) {
+                        UpdateItem(position);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
         }
     }
 
@@ -154,7 +186,7 @@ public class Todo_Adapter extends RecyclerView.Adapter<Todo_Adapter.TodoViewHold
                     Todo_Model todo_model = new Todo_Model(id, title, contact, date, type);
                     if (todoDao.update_data(todo_model)) {
                         Toast.makeText(context, "Update successfully", Toast.LENGTH_SHORT).show();
-                        list.set(position,todo_model);
+                        list.set(position, todo_model);
                         notifyDataSetChanged();
                         alertDialog.dismiss();
                     } else {

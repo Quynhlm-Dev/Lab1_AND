@@ -2,8 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_Delete"
+        android:icon="@drawable/baseline_delete_24"
         android:title="Delete" />
     <item
         android:id="@+id/menu_Update"
+        android:icon="@drawable/baseline_create_24"
         android:title="Update" />
 </menu>
